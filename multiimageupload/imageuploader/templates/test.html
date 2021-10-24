@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Upload Multiple Images With AJAX</title>
+</head>
+<body>
+
+	<form method="POST" enctype="multipart/form-data">
+	{% csrf_token %}
+	<p>{{ form.title }}</p>
+			<p>
+				{{ form.file }}
+				<button id="upload" type="submit">+</button>
+				<span id="urls"></span>
+			</p>
+		</form>
+		<button type="submit">submit</button>
+	</form>
+</body>
+<script>
+	const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+	let uploadForm = document.getElementById("upload");
+	uploadForm.addEventListener("click", (e) => {
+		e.preventDefault();
+		const request = new Request(
+			"up",
+			{ headers: { 'X-CSRFToken': csrftoken } }
+		);
+		fetch(request, {
+			method: 'POST',
+			mode: 'same-origin'  // Do not send CSRF token to another domain.
+		}).then(function (response) {
+			var rr = response.text();
+			rr.then(res => {
+				console.log(res)
+			})
+		});
+	});
+</script>
+{% comment %} <script src="{% static 'imageuploader/upload.js' %}"></script> {% endcomment %}
+</html>
