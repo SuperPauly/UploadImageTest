@@ -1,7 +1,7 @@
 from django.http.response import HttpResponse
 from django.shortcuts import render
 from django.http import JsonResponse
-from .forms import UploadForm
+from .forms import UploadForm, PostTitle
 from uuid import uuid4
 from django.core import serializers
 from django.core.files.storage import FileSystemStorage
@@ -11,8 +11,8 @@ from django.core.files.storage import FileSystemStorage
 
 def upload(request):
     form = UploadForm()
-
-    return render(request, 'test.html', context={"form": form})
+    formm = PostTitle()
+    return render(request, 'test.html', context={"form": form, "formm": formm})
 
 
 def handle_uploaded_file(f):
@@ -28,8 +28,11 @@ def uploadImage(request):
         fss = FileSystemStorage()
         for filename, file in request.FILES.items():
             fss.save(filename, file)
-        
-        ff = UploadForm(name="dsad")
-        if ff.is_valid():
+        uf = UploadForm(request.POST, request.FILES)
+        pf = PostTitle(request.POST)
+        if uf.is_valid() and pf.is_valid():
+            uf.save()
+            pf.save()
+            return JsonResponse({"FUCK": "serial"}, status=200)
         return JsonResponse({"img_url": "serial"}, status=200)
     return JsonResponse({"No": "Upload"}, status=200)
