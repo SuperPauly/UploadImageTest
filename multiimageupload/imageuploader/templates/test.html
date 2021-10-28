@@ -9,12 +9,12 @@
 </head>
 <body>
 
-	<form method="POST" enctype="multipart/form-data">
+	<form method="post" enctype="multipart/form-data">
 	{% csrf_token %}
 	<p>{{ form.title }}</p>
 			<p>
 				{{ form.file }}
-				<button id="upload" type="submit">+</button>
+				<button id="upload" type="submit" onClick="uploadFile()">+</button>
 				<span id="urls"></span>
 			</p>
 		</form>
@@ -22,24 +22,46 @@
 	</form>
 </body>
 <script>
-	const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-	let uploadForm = document.getElementById("upload");
-	uploadForm.addEventListener("click", (e) => {
-		e.preventDefault();
-		const request = new Request(
-			"up",
-			{ headers: { 'X-CSRFToken': csrftoken } }
-		);
-		fetch(request, {
-			method: 'POST',
-			mode: 'same-origin'  // Do not send CSRF token to another domain.
-		}).then(function (response) {
-			var rr = response.text();
-			rr.then(res => {
-				console.log(res)
-			})
+	const fileupload = document.querySelector('#upload');
+	fileupload.addEventListener("click", (e) => {
+		e.preventDefault()
+	})
+	async function uploadFile() {
+		const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+		const fileupload = document.querySelector('input[type=file]');
+		let formData = new FormData();
+		formData.append("file", fileupload.files[0]);
+		await fetch('up', {
+			method: "POST", 
+			body: formData,
+			headers:{
+				'X-CSRFToken': csrftoken,
+			},
+		}).then(m => {
+			console.log(m)
 		});
-	});
+	}
+	
+//	const file = input.files[0];
+//	var fd = new FormData();
+//	fd.append("img", file)
+//	const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+//	let uploadForm = document.getElementById("upload");
+//	uploadForm.addEventListener("click", (e) => {
+//		e.preventDefault();
+//		fetch('up', {
+//		method: 'POST',
+//		body: fd,
+//		headers:{
+//        'Accept': 'multipart/form-data',
+//        'X-CSRFToken': csrftoken,
+//		},
+//	}).then(response => {
+//		return response.json() 
+//	}).then(data => {
+//		console.log(data)
+//	})
+//});
 </script>
 {% comment %} <script src="{% static 'imageuploader/upload.js' %}"></script> {% endcomment %}
 </html>

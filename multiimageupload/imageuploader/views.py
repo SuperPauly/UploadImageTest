@@ -2,7 +2,6 @@ from django.http.response import HttpResponse
 from django.shortcuts import render
 from django.http import JsonResponse
 from .forms import UploadForm
-from .models import Images
 from uuid import uuid4
 from django.core import serializers
 from django.core.files.storage import FileSystemStorage
@@ -13,24 +12,24 @@ from django.core.files.storage import FileSystemStorage
 def upload(request):
     form = UploadForm()
 
-    # instance = Images(file=file, name=str(uuid4()))
-    # instance.save()
-    # instance.save()
     return render(request, 'test.html', context={"form": form})
 
 
+def handle_uploaded_file(f):
+    with open('some/file/name.jpg', 'wb+') as destination:
+        for chunk in f.chunks():
+            destination.write(chunk)
+
+
 def uploadImage(request):
-    print("in func")
-    # serial = serializers.serialize(
-    #     "json", [{"hi": "test", "boo": "fdfs"}, ])
+    print("iner")
+    print(request.FILES)
     if request.method == 'POST':
-        print("passed if")
-        # fs = FileSystemStorage()
-        # print(fs)
-        for ff in request.FILES.items():
-            # filename = fs.save(ff.name, ff)
-            print(ff.name)
-            # uploaded_file = fs.url(filename)
-            # print("UPLOADED TO ----> " + uploaded_file)
+        fss = FileSystemStorage()
+        for filename, file in request.FILES.items():
+            fss.save(filename, file)
+        
+        ff = UploadForm(name="dsad")
+        if ff.is_valid():
         return JsonResponse({"img_url": "serial"}, status=200)
-    return JsonResponse({"none": "serial"}, status=200)
+    return JsonResponse({"No": "Upload"}, status=200)
