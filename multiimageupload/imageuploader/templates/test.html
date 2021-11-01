@@ -11,7 +11,7 @@
 
 	<form method="post" enctype="multipart/form-data">
 	{% csrf_token %}
-	<p>{{ form.tile }}</p>
+	<p>{{ formm.tile }}</p>
 			<p>
 				{{ form.file }}
 				{{ form.name }}
@@ -21,6 +21,7 @@
 		</form>
 		<button type="submit">submit</button>
 	</form>
+	<canvas id="canvas"></canvas>
 </body>
 <script>
 	const fileupload = document.querySelector('#upload');
@@ -31,9 +32,11 @@
 		const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
 		const fileupload = document.querySelector('input[type=file]');
 		let formData = new FormData();
+		var file = new FileReader()
+
 		formData.append("file", fileupload.files[0]);
-		formData.append("name", "shit");
-		formData.append("tile", "beerb");
+		formData.append("name", document.querySelector("#id_name").value);
+		formData.append("tile", document.querySelector("#id_tile").value);
 		await fetch('up', {
 			method: "POST", 
 			body: formData,

@@ -9,5 +9,5 @@ class Post(models.Model):
 
 class Images(models.Model):
     name = models.CharField(max_length=255)
-    file = models.ImageField()
-    k = models.ForeignKey(Post, on_delete=models.CASCADE)
+    file = models.FileField()
+    k = models.ForeignKey(Post, on_delete=models.CASCADE, null=True)

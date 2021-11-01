@@ -2,8 +2,9 @@ from django.http.response import HttpResponse
 from django.shortcuts import render
 from django.http import JsonResponse
 from .forms import UploadForm, PostTitle
+from .models import Post, Images
 from uuid import uuid4
-from django.core import serializers
+import PIL
 from django.core.files.storage import FileSystemStorage
 
 # Create your views here.
@@ -28,11 +29,11 @@ def uploadImage(request):
         fss = FileSystemStorage()
         for filename, file in request.FILES.items():
             fss.save(filename, file)
-        uf = UploadForm(request.POST, request.FILES)
-        pf = PostTitle(request.POST)
-        if uf.is_valid() and pf.is_valid():
-            uf.save()
-            pf.save()
-            return JsonResponse({"FUCK": "serial"}, status=200)
-        return JsonResponse({"img_url": "serial"}, status=200)
-    return JsonResponse({"No": "Upload"}, status=200)
+        image = UploadForm(request.POST, request.FILES)
+        post = PostTitle(request.POST)
+        if image.is_valid() and post.is_valid():
+            post.save()
+            image.save()
+            return JsonResponse({"Saved": request.FILES['file'].name}, status=200)
+        return JsonResponse({"method is POST": "serial"}, status=200)
+    return JsonResponse({"last JSON": "Upload"}, status=200)
