@@ -120,5 +120,6 @@ USE_TZ = True
 
 
 STATIC_URL = '/static/'
-MEDIA_ROOT = '/files/'
-MEDIA_URL = "/ming/"
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+MEDIA_URL = "/media/"
