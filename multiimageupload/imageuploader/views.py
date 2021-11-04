@@ -1,10 +1,8 @@
-from django.http.response import HttpResponse
 from django.shortcuts import render
+from django.conf import settings
 from django.http import JsonResponse
 from .forms import UploadForm, PostTitle
-from .models import Post, Images
 from uuid import uuid4
-import PIL
 from django.core.files.storage import FileSystemStorage
 
 # Create your views here.
@@ -16,14 +14,7 @@ def upload(request):
     return render(request, 'test.html', context={"form": form, "formm": formm})
 
 
-def handle_uploaded_file(f):
-    with open('some/file/name.jpg', 'wb+') as destination:
-        for chunk in f.chunks():
-            destination.write(chunk)
-
-
 def uploadImage(request):
-    print("iner")
     print(request.FILES)
     if request.method == 'POST':
         fss = FileSystemStorage()
