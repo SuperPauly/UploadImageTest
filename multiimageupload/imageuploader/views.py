@@ -1,5 +1,7 @@
 from django.shortcuts import render
 from django.conf import settings
+import json
+from .models import Images
 from django.http import JsonResponse
 from .forms import UploadForm, PostTitle
 from uuid import uuid4
@@ -25,6 +27,8 @@ def uploadImage(request):
         if image.is_valid() and post.is_valid():
             post.save()
             image.save()
-            return JsonResponse({"Saved": request.FILES['file'].name}, status=200)
+            i = Images.objects.last()
+            print(i.file)
+            return JsonResponse({"file": i.name}, status=200)
         return JsonResponse({"method is POST": "serial"}, status=200)
     return JsonResponse({"last JSON": "Upload"}, status=200)
